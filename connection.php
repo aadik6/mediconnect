@@ -3,7 +3,7 @@
 $server = "localhost";
 $username = "root";
 $dpassword = "";
-$db = "student";
+$db = "medi_connect";
 
 $conn = new mysqli($server, $username, $dpassword, $db);
 

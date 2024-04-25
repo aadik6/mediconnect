@@ -9,7 +9,7 @@ $password =$_POST['password'];
 
 $hash_pw = password_hash($password, PASSWORD_DEFAULT);
 
-$sql = "INSERT INTO auth(name,email,password,role) VALUES('$name','$email','$hash_pw','user')";
+$sql = "INSERT INTO auth(user_name,email,password,role) VALUES('$name','$email','$hash_pw','user')";
 if ($conn->query($sql) === TRUE) {
     echo "Registered";
     header("location:index.html");
