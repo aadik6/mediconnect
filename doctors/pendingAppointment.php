@@ -18,7 +18,7 @@ if (isset($_SESSION['user_name'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta name="description" content="" />
   <meta name="author" content="" />
-  <title>Admin-Dashboard</title>
+  <title>Doctor-Dashboard</title>
   <link href="css/styles.css" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -64,22 +64,6 @@ if (isset($_SESSION['user_name'])) {
               </div>
               Dashboard
             </a>
-            <div class="sb-sidenav-menu-heading">Interface</div>
-            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-              <div class="sb-nav-link-icon">
-                <i class="fa-solid fa-user-doctor"></i>
-              </div>
-              Doctor
-              <div class="sb-sidenav-collapse-arrow">
-                <i class="fas fa-angle-down"></i>
-              </div>
-            </a>
-            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-              <nav class="sb-sidenav-menu-nested nav">
-                <a class="nav-link" href="./allDoctors.php">All Doctors</a>
-                <a class="nav-link" href="./addDoctors.php">Add Doctors</a>
-              </nav>
-            </div>
             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts_2" aria-expanded="false" aria-controls="collapseLayouts">
               <div class="sb-nav-link-icon">
                 <i class="fa-regular fa-calendar-check"></i>
@@ -96,19 +80,6 @@ if (isset($_SESSION['user_name'])) {
                 <a class="nav-link" href="./pendingAppointment.php">Pending</a>
               </nav>
             </div>
-
-            <a class="nav-link" href="./department.php">
-              <div class="sb-nav-link-icon">
-                <i class="fas fa-chart-area"></i>
-              </div>
-              Departments
-            </a>
-            <a class="nav-link" href="./users.php">
-              <div class="sb-nav-link-icon">
-                <i class="fa-solid fa-users"></i>
-              </div>
-              Users
-            </a>
           </div>
         </div>
         <div class="sb-sidenav-footer">
@@ -121,10 +92,10 @@ if (isset($_SESSION['user_name'])) {
     <div id="layoutSidenav_content">
       <main>
         <div class="container-fluid px-4">
-          <h1 class="mt-4">All Doctors</h1>
+          <h1 class="mt-4">All Appointments</h1>
           <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-            <li class="breadcrumb-item active">All Doctors</li>
+            <li class="breadcrumb-item active">All Appointments</li>
           </ol>
           <div class="card mb-4">
             <div class="card-body">
@@ -132,24 +103,23 @@ if (isset($_SESSION['user_name'])) {
                 <thead>
                   <tr>
                     <th>Id</th>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Email</th>
-
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Problem</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody id="department_record">
                   <?php
                   include("../connection.php");
-                  $sql = "SELECT * FROM doctors";
+                  $sql = "SELECT * FROM appointments WHERE status = 'pending' ";
                   $result = mysqli_query($conn, $sql);
                   if (mysqli_num_rows($result) > 0) {
                     while ($row = mysqli_fetch_assoc($result)) {
                       echo "<tr>";
                       echo "<td>" . $row['id'] . "</td>";
-                      echo "<td>" . $row['name'] . "</td>";
-                      echo "<td>" . $row['department'] . "</td>";
+                      echo "<td>" . $row['patient_name'] . "</td>";
+                      echo "<td>" . $row['age'] . "</td>";
                       echo "<td>" . $row['email'] . "</td>";
                       echo "<td>
                             <button onclick='deleteUser(" . $row['id'] . ")' class='btn btn-danger'>Delete</button>
@@ -165,6 +135,7 @@ if (isset($_SESSION['user_name'])) {
               </table>
             </div>
           </div>
+
         </div>
       </main>
       <footer class="py-4 bg-light mt-auto">
@@ -181,8 +152,6 @@ if (isset($_SESSION['user_name'])) {
       </footer>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-  <script src="js/datatables-simple-demo.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="js/scripts.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>

@@ -20,8 +20,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // echo "logged in";
             // echo $_SESSION['role'];
             if ($_SESSION['role'] == 'admin') {
-                header("Location: dashboard");
-            } else {
+                header("Location: admin");
+            } elseif($_SESSION['role'] =='doctor'){
+                header("Location: doctors");
+            }
+            else {
 
                 header("Location: doctors.html");
             }

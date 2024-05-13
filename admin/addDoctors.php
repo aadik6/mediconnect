@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (move_uploaded_file($_FILES['image']['tmp_name'], $uploadPath)) {
       echo "Image uploaded successfully.<br>";
 
-      // Collect other form data
+      // Collect form data for the doctors table
       $name = $_POST['name'];
       $department = $_POST['department'];
       $qualification = $_POST['qualification'];
@@ -42,17 +42,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $gender = $_POST['gender'];
       $email = $_POST['email'];
       $mobile = $_POST['mobile'];
-      $loginId = $_POST['loginId'];
       $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
       $createdBy = $adminName;
 
-      // SQL to insert data into the database
-      $sql = "INSERT INTO doctors (name, department, qualification, experience, about, nmc, age, gender, email, mobile, image, login_id, password, createdBy)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-      $stmt = $conn->prepare($sql);
-      $stmt->bind_param('ssssssisssssss', $name, $department, $qualification, $experience, $about, $nmcNumber, $age, $gender, $email, $mobile, $uploadPath, $loginId, $password, $createdBy);
-      $stmt->execute();
-      if ($stmt->affected_rows > 0) {
+      // Insert data into the auth table
+      $sqlAuth = "INSERT INTO auth (user_name, email, password, role)
+       VALUES (?, ?, ?, 'doctor')";
+      $stmtAuth = $conn->prepare($sqlAuth);
+      $stmtAuth->bind_param('sss', $name, $email, $password);
+      $stmtAuth->execute();
+      $userId = $stmtAuth->insert_id;
+
+      // Insert data into the doctors table
+      $sqlDoctors = "INSERT INTO doctors (user_id, name, department, qualification, experience, about, nmc, age, gender, email, mobile, image, createdBy)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      $stmtDoctors = $conn->prepare($sqlDoctors);
+      $stmtDoctors->bind_param('isssssissssss', $userId, $name, $department, $qualification, $experience, $about, $nmcNumber, $age, $gender, $email, $mobile, $uploadPath, $createdBy);
+      $stmtDoctors->execute();
+      if ($stmtDoctors->affected_rows > 0) {
         echo "Doctor added successfully.";
       } else {
         echo "Failed to add doctor.";
@@ -201,7 +208,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Loop through the results and populate the dropdown options
                     while ($row = mysqli_fetch_assoc($result)) {
-                      echo "<option value='" . $row['dep_id'] . "'>" . $row['dep_name'] . "</option>";
+                      echo "<option value='" . $row['dep_name'] . "'>" . $row['dep_name'] . "</option>";
                     }
                     ?>
                   </select>
@@ -212,7 +219,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="mb-3">
                   <label for="experience" class="form-label">Experience</label>
-                  <input type="number" class="form-control" id="experience" name="experience"required>
+                  <input type="number" class="form-control" id="experience" name="experience" required>
                 </div>
                 <div class="mb-3">
                   <label for="about" class="form-label">About</label>
@@ -251,12 +258,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <input type="text" class="form-control" id="createdBy" name="createdBy" required>
                 </div>
                 <div class="mb-3">
-                  <label for="loginId" class="form-label">Login ID</label>
-                  <input type="text" class="form-control" id="loginId" name="loginId" required>
-                </div>
-                <div class="mb-3">
                   <label for="password" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="password"  name="password" required>
+                  <input type="password" class="form-control" id="password" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
               </form>
