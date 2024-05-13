@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+session_start();
+
+// Check if user is logged in and session variables are set
+if (isset($_SESSION['user_name'])) {
+  $createdBy = $_SESSION['user_name'];
+} else {
+  // Default value or handle the case when user is not logged in
+  $createdBy = "Unknown";
+}
+?>
 
 <head>
   <meta charset="utf-8" />
@@ -8,6 +19,8 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   <title>Admin-Dashboard</title>
+  <link href="css/styles.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
   <link href="css/styles.css" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
@@ -23,8 +36,6 @@
     <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
       <div class="input-group">
-        <!-- <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" /> -->
-        <!-- <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button> -->
       </div>
     </form>
     <!-- Navbar-->
@@ -32,7 +43,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-          <li><a class="dropdown-item" href="#!">User_Name</a></li>
+          <li><a class="dropdown-item" href="#!"><?php echo $createdBy; ?></a></li>
           <li>
             <hr class="dropdown-divider" />
           </li>
@@ -86,13 +97,13 @@
               </nav>
             </div>
 
-            <a class="nav-link" href="charts.html">
+            <a class="nav-link" href="./department.php">
               <div class="sb-nav-link-icon">
                 <i class="fas fa-chart-area"></i>
               </div>
               Departments
             </a>
-            <a class="nav-link" href="charts.html">
+            <a class="nav-link" href="./users.php">
               <div class="sb-nav-link-icon">
                 <i class="fa-solid fa-users"></i>
               </div>
@@ -102,7 +113,7 @@
         </div>
         <div class="sb-sidenav-footer">
           <div class="small">Logged in as:</div>
-          User_Name[Admin]
+          <?php echo $createdBy; ?> [Admin]
         </div>
       </nav>
     </div>
@@ -115,49 +126,106 @@
             <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
             <li class="breadcrumb-item active">Departments</li>
           </ol>
+
           <div class="card mb-4">
+            <div class="card-header">
+              <!-- Button trigger modal -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Add department
+              </button>
+
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="exampleModalLabel">Add Department</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Name: <input class="form-control" type="text" id="dep_name" value="">
+                      CreatedBy: <input class="form-control" type="text" id="createdBy" value="<?php echo $createdBy; ?>" readonly>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="saveChangesBtn">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Update Department Modal -->
+              <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="updateModalLabel">Update Department</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <input type="hidden" id="update_dep_id">
+                      <div class="mb-3">
+                        <label for="update_dep_name" class="form-label">Department Name</label>
+                        <input type="text" class="form-control" id="update_dep_name">
+                      </div>
+                      <div class="mb-3">
+                        <label for="update_createdBy" class="form-label">Created By</label>
+                        <input type="text" class="form-control" id="update_createdBy" value="<?php echo $createdBy; ?>" readonly>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="updateChangesBtn">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
             <div class="card-body">
-              Chart.js is a third party plugin that is used to generate the charts in this template. The charts below have been customized - for further customization options, please visit the official
-              <a target="_blank" href="https://www.chartjs.org/docs/latest/">Chart.js documentation</a>
-              .
+                <table id="datatablesSimple" class="table">
+                  <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Name</th>
+                      <th>CreatedBy</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="department_record">
+                    <?php
+                    include("../connection.php");
+                    $sql = "SELECT * FROM departments";
+                    $result = mysqli_query($conn, $sql);
+                    if (mysqli_num_rows($result) > 0) {
+                      while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>";
+                        echo "<td>" . $row['dep_id'] . "</td>";
+                        echo "<td>" . $row['dep_name'] . "</td>";
+                        echo "<td>" . $row['createdBy'] . "</td>";
+                        echo "<td>
+                            <a href='' class='btn btn-primary update-btn' data-dep-id='" . $row['dep_id'] . "' data-dep-name='" . $row['dep_name'] . "' data-bs-toggle='modal' data-bs-target='#updateModal'>Update</a>
+                            <button onclick='deleteDepartment(" . $row['dep_id'] . ")' class='btn btn-danger'>Delete</button>
+                        </td>";
+                        echo "</tr>";
+                      }
+                    } else {
+                      echo "<tr><td colspan='3'>No departments found</td></tr>";
+                    }
+                    mysqli_close($conn);
+                    ?>
+                  </tbody>
+                </table>
             </div>
           </div>
-          <!-- <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-chart-area me-1"></i>
-                                Area Chart Example
-                            </div>
-                            <div class="card-body"><canvas id="myAreaChart" width="100%" height="30"></canvas></div>
-                            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        Bar Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="50"></canvas></div>
-                                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-pie me-1"></i>
-                                        Pie Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myPieChart" width="100%" height="50"></canvas></div>
-                                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-                                </div>
-                            </div>
-                        </div> -->
+
         </div>
       </main>
       <footer class="py-4 bg-light mt-auto">
         <div class="container-fluid px-4">
           <div class="d-flex align-items-center justify-content-between small">
-            <div class="text-muted">Copyright &copy; Your Website 2023</div>
+            <div class="text-muted">Copyright &copy; MediConnect 2024</div>
             <div>
               <a href="#">Privacy Policy</a>
               &middot;
@@ -171,9 +239,120 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="js/scripts.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-  <script src="assets/demo/chart-area-demo.js"></script>
-  <script src="assets/demo/chart-bar-demo.js"></script>
-  <script src="assets/demo/chart-pie-demo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+  <script src="js/datatables-simple-demo.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $('#saveChangesBtn').on("click", function() {
+      createDepartments();
+    });
+
+
+
+
+    function createDepartments() {
+      var name = $('#dep_name').val();
+      var createdBy = $('#createdBy').val();
+      $.ajax({
+        type: 'POST',
+        url: 'crud.php',
+        data: {
+          action: 'create',
+          name: name,
+          createdBy: createdBy
+        },
+        success: function(response) {
+          $('#exampleModal').modal('hide');
+          fetchDepartments();
+        }
+      });
+    }
+
+    function fetchDepartments() {
+      $.ajax({
+        type: "POST",
+        url: "crud.php",
+        data: {
+          action: 'read'
+        },
+        success: function(response) {
+          var items = JSON.parse(response);
+          console.log(items)
+          var itemList = $('#department_record');
+          itemList.empty();
+          if (items.length > 0) {
+            items.forEach(function(item) {
+              itemList.append('<tr>' +
+                '<td>' + item.dep_id + '</td>' +
+                '<td>' + item.dep_name + '</td>' +
+                '<td>' + item.createdBy + '</td>' +
+                '<td>' +
+                '<a href="update_department.php?id=' + item.id + '"><button class="btn btn-primary">Update</button></a>' +
+                '<a href="delete_department.php?id=' + item.id + '"><button class="btn btn-danger">Delete</button></a>' +
+                '</td>' +
+                '</tr>');
+            });
+          } else {
+            itemList.append('<tr><td colspan="4">No departments found</td></tr>');
+          }
+        }
+      });
+    }
+
+    function deleteDepartment(depId) {
+      console.log(depId)
+      if (confirm("Are you sure you want to delete this department?")) {
+        $.ajax({
+          type: 'POST',
+          url: 'crud.php',
+          data: {
+            action: 'delete',
+            depId: depId
+          },
+          success: function(response) {
+            fetchDepartments();
+          }
+        });
+      }
+    }
+
+    // Update button click event
+    $('.update-btn').on("click", function() {
+      var depId = $(this).data('dep-id');
+      var depName = $(this).data('dep-name');
+      $('#update_dep_id').val(depId);
+      $('#update_dep_name').val(depName);
+    });
+
+    // Save changes button click event for updating department
+    $('#updateChangesBtn').on("click", function() {
+      updateDepartment();
+    });
+
+    // Function to update department
+    function updateDepartment() {
+      var id = $('#update_dep_id').val();
+      var name = $('#update_dep_name').val();
+      console.log(name)
+      var createdBy = $('#update_createdBy').val(); // You might want to remove this line if createdBy is not editable
+      $.ajax({
+        type: 'POST',
+        url: 'crud.php',
+        data: {
+          action: 'update',
+          id: id,
+          name: name
+        },
+        success: function(response) {
+          $('#updateModal').modal('hide');
+          fetchDepartments();
+        }
+      });
+    }
+  </script>
+
+
 </body>
 
 </html>

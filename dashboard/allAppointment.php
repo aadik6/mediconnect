@@ -1,5 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+session_start();
+
+// Check if user is logged in and session variables are set
+if (isset($_SESSION['user_name'])) {
+  $userName = $_SESSION['user_name'];
+} else {
+  // Default value or handle the case when user is not logged in
+  $userName = "Unknown";
+}
+?>
 
 <head>
   <meta charset="utf-8" />
@@ -32,7 +43,7 @@
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-          <li><a class="dropdown-item" href="#!">User_Name</a></li>
+          <li><a class="dropdown-item" href="#!"><?php echo $userName; ?></a></li>
           <li>
             <hr class="dropdown-divider" />
           </li>
@@ -86,13 +97,13 @@
               </nav>
             </div>
 
-            <a class="nav-link" href="charts.html">
+            <a class="nav-link" href="./department.php">
               <div class="sb-nav-link-icon">
                 <i class="fas fa-chart-area"></i>
               </div>
               Departments
             </a>
-            <a class="nav-link" href="charts.html">
+            <a class="nav-link" href="./users.php">
               <div class="sb-nav-link-icon">
                 <i class="fa-solid fa-users"></i>
               </div>
@@ -102,7 +113,7 @@
         </div>
         <div class="sb-sidenav-footer">
           <div class="small">Logged in as:</div>
-          User_Name[Admin]
+          <?php echo $userName; ?>[Admin]
         </div>
       </nav>
     </div>
@@ -117,47 +128,49 @@
           </ol>
           <div class="card mb-4">
             <div class="card-body">
-              Chart.js is a third party plugin that is used to generate the charts in this template. The charts below have been customized - for further customization options, please visit the official
-              <a target="_blank" href="https://www.chartjs.org/docs/latest/">Chart.js documentation</a>
-              .
+              <table id="datatablesSimple" class="table">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Problem</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="department_record">
+                  <?php
+                  include("../connection.php");
+                  $sql = "SELECT * FROM appointments ";
+                  $result = mysqli_query($conn, $sql);
+                  if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                      echo "<tr>";
+                      echo "<td>" . $row['id'] . "</td>";
+                      echo "<td>" . $row['patient_name'] . "</td>";
+                      echo "<td>" . $row['age'] . "</td>";
+                      echo "<td>" . $row['email'] . "</td>";
+                      echo "<td>
+                            <button onclick='deleteUser(" . $row['id'] . ")' class='btn btn-danger'>Delete</button>
+                        </td>";
+                      echo "</tr>";
+                    }
+                  } else {
+                    echo "<tr><td colspan='3'>No departments found</td></tr>";
+                  }
+                  mysqli_close($conn);
+                  ?>
+                </tbody>
+              </table>
             </div>
           </div>
-          <!-- <div class="card mb-4">
-                            <div class="card-header">
-                                <i class="fas fa-chart-area me-1"></i>
-                                Area Chart Example
-                            </div>
-                            <div class="card-body"><canvas id="myAreaChart" width="100%" height="30"></canvas></div>
-                            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-bar me-1"></i>
-                                        Bar Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="50"></canvas></div>
-                                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="card mb-4">
-                                    <div class="card-header">
-                                        <i class="fas fa-chart-pie me-1"></i>
-                                        Pie Chart Example
-                                    </div>
-                                    <div class="card-body"><canvas id="myPieChart" width="100%" height="50"></canvas></div>
-                                    <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
-                                </div>
-                            </div>
-                        </div> -->
+
         </div>
       </main>
       <footer class="py-4 bg-light mt-auto">
         <div class="container-fluid px-4">
           <div class="d-flex align-items-center justify-content-between small">
-            <div class="text-muted">Copyright &copy; Your Website 2023</div>
+            <div class="text-muted">Copyright &copy; MediConnect 2024</div>
             <div>
               <a href="#">Privacy Policy</a>
               &middot;
