@@ -6,6 +6,39 @@
     <title>Doctors Registration</title>
 </head>
 <body>
-    
+    <h1>Doctors Registration Form</h1>
+    <form action="/submit-your-form-handler" method="POST" enctype="multipart/form-data">
+        <label for="docName">Doctor's Name:</label>
+        <input type="text" id="docName" name="docName" required><br><br>
+
+        <label for="docImage">Upload Image:</label>
+        <input type="file" id="docImage" name="docImage" accept="image/*" required><br><br>
+
+        <label for="docQualifications">Qualifications:</label>
+        <input type="text" id="docQualifications" name="docQualifications" required><br><br>
+
+        <label for="docExperience">Experience (years):</label>
+        <input type="number" id="docExperience" name="docExperience" required><br><br>
+
+        <label for="docAbout">About:</label>
+        <textarea id="docAbout" name="docAbout" required></textarea><br><br>
+
+        <label for="docDepartment">Department:</label>
+        <input type="text" id="docDepartment" name="docDepartment" required><br><br>
+
+        <label for="docSpecialist">Specialist In:</label>
+        <input type="text" id="docSpecialist" name="docSpecialist" required><br><br>
+
+        <label for="docPhone">Phone Number:</label>
+        <input type="tel" id="docPhone" name="docPhone" required><br><br>
+
+        <label for="docEmail">Email:</label>
+        <input type="email" id="docEmail" name="docEmail" required><br><br>
+
+        <label for="docPassword">Password:</label>
+        <input type="password" id="docPassword" name="docPassword" required><br><br>
+
+        <input type="submit" value="Register">
+    </form>
 </body>
 </html>
