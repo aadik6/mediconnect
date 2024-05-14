@@ -12,7 +12,7 @@ $hash_pw = password_hash($password, PASSWORD_DEFAULT);
 $sql = "INSERT INTO auth(user_name,email,password,role) VALUES('$name','$email','$hash_pw','user')";
 if ($conn->query($sql) === TRUE) {
     echo "Registered";
-    header("location:index.html");
+    header("location:index.php");
 } else {
     echo "Error " . $sql . "<br>" . $conn->error;
 }
