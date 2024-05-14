@@ -35,7 +35,7 @@
               <a class="nav-link" href="./doctors.php">Doctors</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./userAppointment.php">My Appointment</a>
+              <a class="nav-link" href="./user">My Appointment</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="./login.php">Login</a>

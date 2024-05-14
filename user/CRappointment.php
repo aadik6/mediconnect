@@ -1,5 +1,5 @@
 <?php
-include("./connection.php");
+include("../connection.php");
 session_start();
 
 // Check if user is logged in and session variables are set
