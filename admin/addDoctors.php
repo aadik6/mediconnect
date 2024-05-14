@@ -14,16 +14,12 @@ if (!isset($_SESSION['user_name'])) {
 $adminName = $_SESSION['user_name'];
 
 // Database connection
-include("../connection.php"); // Adjust the path as needed
+include("../connection.php"); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Check if the form was submitted with an image file
   if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     // Define upload directory
     $uploadDir = "uploads/";
-    // Ensure this directory exists and is writable
-
-    // Generate a unique file name to prevent overwriting existing files
     $fileName = time() . "_" . basename($_FILES['image']['name']);
     $uploadPath = $uploadDir . $fileName;
 

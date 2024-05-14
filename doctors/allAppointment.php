@@ -122,14 +122,13 @@ if (isset($_SESSION['user_name'])) {
                       echo "<td>" . $row['patient_name'] . "</td>";
                       echo "<td>" . $row['age'] . "</td>";
                       echo "<td>" . $row['mobile'] . "</td>";
-                      if($row['status']=='pending'){
-
+                      if ($row['status'] == 'pending') {
                         echo "<td>
                               <button onclick='updateStatus(" . $row['id'] . ")' class='btn btn-warning'>Approve</button>
                           </td>";
                         echo "</tr>";
-                      }else{
-                        echo"<td>
+                      } else {
+                        echo "<td>
                         <button class='btn btn-success'>Approved</button>
                     </td>";
                       }
@@ -160,6 +159,23 @@ if (isset($_SESSION['user_name'])) {
       </footer>
     </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function updateStatus(id) {
+      var id = id;
+      $.ajax({
+        type: 'POST',
+        url: 'APcrud.php',
+        data: {
+          action: 'update',
+          id: id
+        },
+        success: function(response) {
+          alert("Approved")
+        }
+      })
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   <script src="js/scripts.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>

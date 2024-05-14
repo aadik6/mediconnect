@@ -231,68 +231,100 @@ if (isset($_SESSION['user_name'])) {
                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
                         <script>
-                            const exampleModal = document.getElementById("exampleModal");
-                            var doctorId;
-                            if (exampleModal) {
-                                exampleModal.addEventListener("show.bs.modal", (event) => {
-                                    // Button that triggered the modal
-                                    const button = event.relatedTarget;
-                                    // Extract info from data-bs-* attributes
-                                    const recipient = button.getAttribute("data-bs-whatever");
-                                    const category = button.getAttribute("data-bs-category");
-                                    const drId = button.getAttribute("data-bs-id");
-                                    doctorId = drId
+    const exampleModal = document.getElementById("exampleModal");
+    var doctorId;
+    if (exampleModal) {
+        exampleModal.addEventListener("show.bs.modal", (event) => {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
+            // Extract info from data-bs-* attributes
+            const recipient = button.getAttribute("data-bs-whatever");
+            const category = button.getAttribute("data-bs-category");
+            const drId = button.getAttribute("data-bs-id");
+            doctorId = drId
 
-                                    // Update the modal's content.
-                                    const modalTitle = exampleModal.querySelector(".modal-title");
-                                    const modalBodyInput = exampleModal.querySelector(
-                                        ".modal-body #recipient-name"
-                                    );
-                                    const modalBodyDeases = exampleModal.querySelector(
-                                        ".modal-body #deases-name"
-                                    );
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector(".modal-title");
+            const modalBodyInput = exampleModal.querySelector(
+                ".modal-body #recipient-name"
+            );
+            const modalBodyDeases = exampleModal.querySelector(
+                ".modal-body #deases-name"
+            );
 
-                                    modalBodyDeases.value = category;
-                                    modalTitle.textContent = `Book appointment to Dr. ${recipient}`;
-                                    modalBodyInput.value = recipient;
-                                });
+            modalBodyDeases.value = category;
+            modalTitle.textContent = `Book appointment to Dr. ${recipient}`;
+            modalBodyInput.value = recipient;
+        });
 
-                                $('#createAppointment').on("click", function() {
-                                    createAppointment(doctorId)
-                                })
+        $('#createAppointment').on("click", function() {
+            createAppointment(doctorId)
+        })
 
-                                function createAppointment(drId) {
-                                    var patient_name = $('#patient_name').val();
-                                    var age = $('#patient_age').val();
-                                    var gender = $('#patient_gender').val();
-                                    var mobile = $('#patient_mobile').val();
-                                    var about = $('#about').val();
-                                    var doctor_name = $('#recipient-name').val();
-                                    var department = $('#deases-name').val();
-                                    var date = $('#appointment_date').val();
-                                    var doctor_id = drId
-                                    $.ajax({
-                                        type: 'Post',
-                                        url: 'CRappointment.php',
-                                        data: {
-                                            action: 'create',
-                                            patient_name: patient_name,
-                                            patient_age: age,
-                                            patient_gender: gender,
-                                            mobile: mobile,
-                                            about: about,
-                                            department: department,
-                                            doctor_id: doctor_id,
-                                            doctor_name: doctor_name,
-                                            appointment_date: date
-                                        },
-                                        success: function(response) {
-                                            $('#exampleModal').modal('hide');
-                                        }
-                                    })
-                                }
-                            }
-                        </script>
+        function createAppointment(drId) {
+            var patient_name = $('#patient_name').val();
+            var age = $('#patient_age').val();
+            var gender = $('#patient_gender').val();
+            var mobile = $('#patient_mobile').val();
+            var about = $('#about').val();
+            var doctor_name = $('#recipient-name').val();
+            var department = $('#deases-name').val();
+            var date = $('#appointment_date').val();
+            var doctor_id = drId;
+
+            // Validation
+            if (patient_name === "" || age === "" || mobile === "" || date === "" || about === "") {
+                alert("Please fill out all fields.");
+                return;
+            }
+
+            if (isNaN(age) || parseInt(age) <= 0 || parseInt(age) >= 100) {
+                alert("Age must be a valid number less than 100.");
+                return;
+            }
+
+            if (mobile.length !== 10 || !(/^\d+$/.test(mobile))) {
+                alert("Mobile number should be a 10-digit number.");
+                return;
+            }
+
+            // Validate appointment date is not in the past
+            var today = new Date().toISOString().slice(0, 10);
+            if (date < today) {
+                alert("Appointment date should not be in the past.");
+                return;
+            }
+
+            // Proceed with AJAX request if all validations pass
+            $.ajax({
+                type: 'Post',
+                url: 'CRappointment.php',
+                data: {
+                    action: 'create',
+                    patient_name: patient_name,
+                    patient_age: age,
+                    patient_gender: gender,
+                    mobile: mobile,
+                    about: about,
+                    department: department,
+                    doctor_id: doctor_id,
+                    doctor_name: doctor_name,
+                    appointment_date: date
+                },
+                success: function(response) {
+                    $('#patient_name').val('');
+                    $('#patient_age').val('');
+                    $('#patient_gender').val('');
+                    $('#patient_mobile').val('');
+                    $('#about').val('');
+                    $('#appointment_date').val('');
+                    $('#exampleModal').modal('hide');
+                }
+            })
+        }
+    }
+</script>
+
 
                     </div>
                     <!-- End Add Doctor Form -->
