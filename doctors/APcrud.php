@@ -15,7 +15,7 @@ switch ($action) {
 
     case 'update':
         $id = $_POST['id'];
-        $sql = "UPDATE departments SET dep_name = 'success' WHERE id=?";
+        $sql = "UPDATE appointments SET status = 'success' WHERE id=?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         $stmt->execute();
