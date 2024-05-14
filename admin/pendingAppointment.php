@@ -134,8 +134,9 @@ if (isset($_SESSION['user_name'])) {
                                         <th>Id</th>
                                         <th>Patient Name</th>
                                         <th>Age</th>
-                                        <th>Problem</th>
-                                        <th>Action</th>
+                                        <th>Mobile</th>
+                                        <th>Doctor</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="department_record">
@@ -149,9 +150,10 @@ if (isset($_SESSION['user_name'])) {
                                             echo "<td>" . $row['id'] . "</td>";
                                             echo "<td>" . $row['patient_name'] . "</td>";
                                             echo "<td>" . $row['age'] . "</td>";
-                                            echo "<td>" . $row['email'] . "</td>";
+                                            echo "<td>" . $row['mobile'] . "</td>";
+                                            echo "<td>" . $row['doctor_name'] . "</td>";
                                             echo "<td>
-                            <button onclick='deleteUser(" . $row['id'] . ")' class='btn btn-danger'>Delete</button>
+                            <button  class='btn btn-danger'>Pending</button>
                         </td>";
                                             echo "</tr>";
                                         }

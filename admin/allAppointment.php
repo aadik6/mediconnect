@@ -128,19 +128,21 @@ if (isset($_SESSION['user_name'])) {
           </ol>
           <div class="card mb-4">
             <div class="card-body">
-              <table id="datatablesSimple" class="table">
+            <table id="datatablesSimple" class="table">
                 <thead>
                   <tr>
                     <th>Id</th>
                     <th>Patient Name</th>
                     <th>Age</th>
-                    <th>Problem</th>
-                    <th>Action</th>
+                    <th>Mobile</th>
+                    <th>Doctor</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody id="department_record">
                   <?php
                   include("../connection.php");
+                  $todayDate = date("Y-m-d");
                   $sql = "SELECT * FROM appointments ";
                   $result = mysqli_query($conn, $sql);
                   if (mysqli_num_rows($result) > 0) {
@@ -149,14 +151,23 @@ if (isset($_SESSION['user_name'])) {
                       echo "<td>" . $row['id'] . "</td>";
                       echo "<td>" . $row['patient_name'] . "</td>";
                       echo "<td>" . $row['age'] . "</td>";
-                      echo "<td>" . $row['email'] . "</td>";
+                      echo "<td>" . $row['mobile'] . "</td>";
+                      echo "<td>" . $row['doctor_name'] . "</td>";
+                      if($row['status']=='success'){
+
+                        echo "<td>
+                          <button class='btn btn-success'>Approved</button>
+                      </td>";
+                    }
+                    else{
                       echo "<td>
-                            <button onclick='deleteUser(" . $row['id'] . ")' class='btn btn-danger'>Delete</button>
-                        </td>";
-                      echo "</tr>";
+                        <button class='btn btn-warning'>Pending</button>
+                    </td>";
+
+                    }
                     }
                   } else {
-                    echo "<tr><td colspan='3'>No departments found</td></tr>";
+                    echo "<tr><td colspan='3'>No Appointments for today found</td></tr>";
                   }
                   mysqli_close($conn);
                   ?>
