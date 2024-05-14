@@ -152,7 +152,7 @@ if (isset($_SESSION['user_name'])) {
                       echo "<td>" . $row['department'] . "</td>";
                       echo "<td>" . $row['email'] . "</td>";
                       echo "<td>
-                            <button onclick='deleteUser(" . $row['user_id'] . ")' class='btn btn-danger'>Delete</button>
+                            <button onclick='deleteDoctor(" . $row['doctor_id'] . ")' class='btn btn-danger'>Delete</button>
                         </td>";
                       echo "</tr>";
                     }
@@ -181,6 +181,24 @@ if (isset($_SESSION['user_name'])) {
       </footer>
     </div>
   </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function deleteDoctor(Id) {
+      if (confirm("Are you sure you want to delete this department?")) {
+        $.ajax({
+          type: 'POST',
+          url: 'doctorsCrud.php',
+          data: {
+            action: 'delete',
+            id: Id
+          },
+          success: function(response) {
+           alert("Doctor Deleted")
+          }
+        });
+      }
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
   <script src="js/datatables-simple-demo.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
