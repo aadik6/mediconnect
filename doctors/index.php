@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<?php
+session_start();
+
+// Check if user is logged in and session variables are set
+if (isset($_SESSION['user_name'])) {
+  $userName = $_SESSION['user_name'];
+} else {
+  // Default value or handle the case when user is not logged in
+  $userName = "Unknown";
+}
+?>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -57,7 +69,7 @@
             class="dropdown-menu dropdown-menu-end"
             aria-labelledby="navbarDropdown"
           >
-            <li><a class="dropdown-item" href="#!">User_Name</a></li>
+            <li><a class="dropdown-item" href="#!"><?php echo $userName; ?></a></li>
             <li><hr class="dropdown-divider" /></li>
             <li><a class="dropdown-item" href="#!">Logout</a></li>
           </ul>
@@ -119,7 +131,7 @@
           </div>
           <div class="sb-sidenav-footer">
             <div class="small">Logged in as:</div>
-            User_Name[Admin]
+            <?php echo $userName; ?>[Doctor]
           </div>
         </nav>
       </div>
@@ -198,62 +210,47 @@
                 Today's Appointments
               </div>
               <div class="card-body">
-                <table id="datatablesSimple">
-                  <thead>
-                    <tr>
-                      <th>Id</th>
-                      <th>Patient Name</th>
-                      <th>Age</th>
-                      <th>Gender</th>
-                      <th>Status</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tfoot>
-                    <tr>
-                       <th>User</th>
-                      <th>Patient Name</th>
-                      <th>Age</th>
-                      <th>Department</th>
-                      <th>Date</th>
-                      <th>Doctor</th>
-                    </tr>
-                  </tfoot>
-                  <tbody>
-                    <tr>
-                      <td>Jonas Alexander</td>
-                      <td>Developer</td>
-                      <td>San Francisco</td>
-                      <td>30</td>
-                      <td>2010/07/14</td>
-                      <td>$86,500</td>
-                    </tr>
-                    <tr>
-                      <td>Shad Decker</td>
-                      <td>Regional Director</td>
-                      <td>Edinburgh</td>
-                      <td>51</td>
-                      <td>2008/11/13</td>
-                      <td>$183,000</td>
-                    </tr>
-                    <tr>
-                      <td>Michael Bruce</td>
-                      <td>Javascript Developer</td>
-                      <td>Singapore</td>
-                      <td>29</td>
-                      <td>2011/06/27</td>
-                      <td>$183,000</td>
-                    </tr>
-                    <tr>
-                      <td>Donna Snider</td>
-                      <td>Customer Support</td>
-                      <td>New York</td>
-                      <td>27</td>
-                      <td>2011/01/25</td>
-                      <td>$112,000</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <table id="datatablesSimple" class="table">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Patient Name</th>
+                    <th>Age</th>
+                    <th>Mobile</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="department_record">
+                  <?php
+                  include("../connection.php");
+                  $sql = "SELECT * FROM appointments WHERE doctor_name = '$userName' ";
+                  $result = mysqli_query($conn, $sql);
+                  if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                      echo "<tr>";
+                      echo "<td>" . $row['id'] . "</td>";
+                      echo "<td>" . $row['patient_name'] . "</td>";
+                      echo "<td>" . $row['age'] . "</td>";
+                      echo "<td>" . $row['mobile'] . "</td>";
+                      if($row['status']=='pending'){
+
+                        echo "<td>
+                              <button onclick='updateStatus(" . $row['id'] . ")' class='btn btn-warning'>Approve</button>
+                          </td>";
+                        echo "</tr>";
+                      }else{
+                        echo"<td>
+                        <button class='btn btn-success'>Approved</button>
+                    </td>";
+                      }
+                    }
+                  } else {
+                    echo "<tr><td colspan='3'>No departments found</td></tr>";
+                  }
+                  mysqli_close($conn);
+                  ?>
+                </tbody>
+              </table>
               </div>
             </div>
           </div>

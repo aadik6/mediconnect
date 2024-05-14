@@ -6,6 +6,7 @@ session_start();
 // Check if user is logged in and session variables are set
 if (isset($_SESSION['user_name'])) {
   $userName = $_SESSION['user_name'];
+  $userId = $_SESSION['user_id'];
 } else {
   // Default value or handle the case when user is not logged in
   $userName = "Unknown";
@@ -84,7 +85,7 @@ if (isset($_SESSION['user_name'])) {
         </div>
         <div class="sb-sidenav-footer">
           <div class="small">Logged in as:</div>
-          <?php echo $userName; ?>[Admin]
+          <?php echo $userName; ?>[Doctor]
         </div>
       </nav>
     </div>
@@ -105,14 +106,14 @@ if (isset($_SESSION['user_name'])) {
                     <th>Id</th>
                     <th>Patient Name</th>
                     <th>Age</th>
-                    <th>Problem</th>
+                    <th>Mobile</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody id="department_record">
                   <?php
                   include("../connection.php");
-                  $sql = "SELECT * FROM appointments ";
+                  $sql = "SELECT * FROM appointments WHERE doctor_name = '$userName' ";
                   $result = mysqli_query($conn, $sql);
                   if (mysqli_num_rows($result) > 0) {
                     while ($row = mysqli_fetch_assoc($result)) {
@@ -120,11 +121,18 @@ if (isset($_SESSION['user_name'])) {
                       echo "<td>" . $row['id'] . "</td>";
                       echo "<td>" . $row['patient_name'] . "</td>";
                       echo "<td>" . $row['age'] . "</td>";
-                      echo "<td>" . $row['email'] . "</td>";
-                      echo "<td>
-                            <button onclick='deleteUser(" . $row['id'] . ")' class='btn btn-danger'>Delete</button>
-                        </td>";
-                      echo "</tr>";
+                      echo "<td>" . $row['mobile'] . "</td>";
+                      if($row['status']=='pending'){
+
+                        echo "<td>
+                              <button onclick='updateStatus(" . $row['id'] . ")' class='btn btn-warning'>Approve</button>
+                          </td>";
+                        echo "</tr>";
+                      }else{
+                        echo"<td>
+                        <button class='btn btn-success'>Approved</button>
+                    </td>";
+                      }
                     }
                   } else {
                     echo "<tr><td colspan='3'>No departments found</td></tr>";

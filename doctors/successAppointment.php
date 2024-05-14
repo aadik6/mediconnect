@@ -84,7 +84,7 @@ if (isset($_SESSION['user_name'])) {
         </div>
         <div class="sb-sidenav-footer">
           <div class="small">Logged in as:</div>
-          <?php echo $userName; ?>[Admin]
+          <?php echo $userName; ?>[Doctor]
         </div>
       </nav>
     </div>
@@ -105,14 +105,14 @@ if (isset($_SESSION['user_name'])) {
                     <th>Id</th>
                     <th>Patient Name</th>
                     <th>Age</th>
-                    <th>Problem</th>
+                    <th>Mobile</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody id="department_record">
                   <?php
                   include("../connection.php");
-                  $sql = "SELECT * FROM appointments WHERE status = 'success' ";
+                  $sql = "SELECT * FROM appointments WHERE status = 'success' AND doctor_name = '$userName'";
                   $result = mysqli_query($conn, $sql);
                   if (mysqli_num_rows($result) > 0) {
                     while ($row = mysqli_fetch_assoc($result)) {
@@ -120,10 +120,10 @@ if (isset($_SESSION['user_name'])) {
                       echo "<td>" . $row['id'] . "</td>";
                       echo "<td>" . $row['patient_name'] . "</td>";
                       echo "<td>" . $row['age'] . "</td>";
-                      echo "<td>" . $row['email'] . "</td>";
+                      echo "<td>" . $row['mobile'] . "</td>";
                       echo "<td>
-                            <button onclick='deleteUser(" . $row['id'] . ")' class='btn btn-danger'>Delete</button>
-                        </td>";
+                      <button  class='btn btn-success'>Approved</button>
+                  </td>";
                       echo "</tr>";
                     }
                   } else {
