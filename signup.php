@@ -34,7 +34,7 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
-                            <a href="./login.php">Already have a/c</a>
+                            <a href="./login.php">Already have an account?</a>
                         </form>
                     </div>
                 </div>
@@ -44,9 +44,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function validateForm() {
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
             var confirmPassword = document.getElementById("confirm_password").value;
-            var email = document.getElementById("email").value;
+
+            // Check if name contains at least one letter
+            var namePattern = /[a-zA-Z]/;
+            if (!namePattern.test(name)) {
+                alert("Name must be charactor.");
+                return false;
+            }
 
             if (password !== confirmPassword) {
                 alert("Passwords do not match.");
@@ -65,7 +73,7 @@
                 return false;
             }
 
-            return true; // Form will submit if all validations pass
+            return true; 
         }
     </script>
 </body>
@@ -84,10 +92,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "INSERT INTO auth(user_name,email,password,role) VALUES('$name','$email','$hash_pw','user')";
     if ($conn->query($sql) === TRUE) {
-        echo "<script>alert('Registered');</script>";
-        header("location:index.php");
+        echo "<script>alert('You are registered successfully!');</script>";
+        echo "<script>window.location.href='index.php';</script>";
     } else {
-        echo "Error " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
 }
 ?>

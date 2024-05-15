@@ -16,7 +16,7 @@ if (isset($_SESSION['user_name']) && isset($_SESSION['user_id'])) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Dashboard</title>
   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
   <link href="css/styles.css" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -109,7 +109,7 @@ if (isset($_SESSION['user_name']) && isset($_SESSION['user_id'])) {
                   echo "</tr>";
                 }
               } else {
-                echo "<tr><td colspan='3'>No departments found</td></tr>";
+                echo "<tr><td colspan='3'>No Appointment found</td></tr>";
               }
               mysqli_close($conn);
               ?>

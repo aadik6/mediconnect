@@ -7,7 +7,6 @@ session_start(); // Start the session
 // Check if user is logged in
 if (!isset($_SESSION['user_name'])) {
   echo "You are not logged in!";
-  // Redirect to login page or handle accordingly
   exit(); // Stop further execution of the script
 }
 
@@ -56,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $stmtDoctors->bind_param('isssssissssss', $userId, $name, $department, $qualification, $experience, $about, $nmcNumber, $age, $gender, $email, $mobile, $uploadPath, $createdBy);
       $stmtDoctors->execute();
       if ($stmtDoctors->affected_rows > 0) {
-        echo "Doctor added successfully.";
+        echo "<script>alert('Doctor added successfully!');</script>";
       } else {
         echo "Failed to add doctor.";
       }
@@ -249,10 +248,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <label for="image" class="form-label">Image</label>
                   <input type="file" class="form-control" id="image" name="image" required>
                 </div>
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                   <label for="createdBy" class="form-label">Created By</label>
                   <input type="text" class="form-control" id="createdBy" name="createdBy" required>
-                </div>
+                </div> -->
                 <div class="mb-3">
                   <label for="password" class="form-label">Password</label>
                   <input type="password" class="form-control" id="password" name="password" required>

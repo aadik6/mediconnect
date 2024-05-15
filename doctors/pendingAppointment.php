@@ -122,7 +122,7 @@ if (isset($_SESSION['user_name'])) {
                       echo "<td>" . $row['age'] . "</td>";
                       echo "<td>" . $row['mobile'] . "</td>";
                       echo "<td>
-                            <button onclick='updateStatus(" . $row['id'] . ")' class='btn btn-warning'>Approve</button>
+                            <button onclick='confirmUpdateStatus(" . $row['id'] . ")' class='btn btn-warning'>Approve</button>
                         </td>";
                       echo "</tr>";
                     }
@@ -154,6 +154,11 @@ if (isset($_SESSION['user_name'])) {
   </div>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
+    function confirmUpdateStatus(id){
+      if(confirm("Are you sure to approve this aapointment")){
+        updateStatus(id)
+      }
+    }
     function updateStatus(id) {
       var id = id;
       $.ajax({
@@ -165,6 +170,7 @@ if (isset($_SESSION['user_name'])) {
         },
         success: function(response) {
           alert("Approved")
+          location.reload();
         }
       })
     }

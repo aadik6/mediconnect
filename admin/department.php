@@ -122,7 +122,7 @@ if (isset($_SESSION['user_name'])) {
       <main>
         <div class="container-fluid px-4">
           <h1 class="mt-4">Departments</h1>
-          <ol class="breadcrumb mb-4">
+          <ol class="breadcrumb mb=4">
             <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
             <li class="breadcrumb-item active">Departments</li>
           </ol>
@@ -136,7 +136,7 @@ if (isset($_SESSION['user_name'])) {
 
               <!-- Modal -->
               <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h1 class="modal-title fs-5" id="exampleModalLabel">Add Department</h1>
@@ -248,11 +248,12 @@ if (isset($_SESSION['user_name'])) {
       createDepartments();
     });
 
-
-
-
     function createDepartments() {
       var name = $('#dep_name').val();
+      if (name.trim() === "") {
+        alert("Department name cannot be empty.");
+        return;
+      }
       var createdBy = $('#createdBy').val();
       $.ajax({
         type: 'POST',
@@ -263,6 +264,7 @@ if (isset($_SESSION['user_name'])) {
           createdBy: createdBy
         },
         success: function(response) {
+          $('#dep_name').val("");
           $('#exampleModal').modal('hide');
           fetchDepartments();
         }
@@ -334,7 +336,10 @@ if (isset($_SESSION['user_name'])) {
     function updateDepartment() {
       var id = $('#update_dep_id').val();
       var name = $('#update_dep_name').val();
-      console.log(name)
+      if (name.trim() === "") {
+        alert("Department name cannot be empty.");
+        return;
+      }
       var createdBy = $('#update_createdBy').val(); // You might want to remove this line if createdBy is not editable
       $.ajax({
         type: 'POST',
